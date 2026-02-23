@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,117 +8,168 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'OS Lab Assignment',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        useMaterial3: true,
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const MyHomePage(title: 'Flutter Demo Home Page'),
+        '/': (context) => const AssignmentPage(),
       },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class AssignmentPage extends StatelessWidget {
+  const AssignmentPage({super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  final String scriptContent = '''#!/bin/bash
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+# Section B: Artificial Intelligence Department
+# Lab Title: Shell-Based Data Preprocessing Pipeline
 
-  final String title;
+# 1. Environment Setup & Variables
+DATA_DIR="AI_Datasets"
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+# Create directory and navigate into it
+# Check if directory exists to avoid errors or clean up previous runs
+if [ -d "\$DATA_DIR" ]; then
+    echo "Directory \$DATA_DIR already exists. Cleaning up for fresh start..."
+    rm -rf "\$DATA_DIR"
+fi
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+mkdir "\$DATA_DIR"
+cd "\$DATA_DIR" || exit
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+echo "=========================================="
+echo "   AI Data Preprocessing Pipeline Started"
+echo "=========================================="
+
+# 2. The Dataset Loop
+# Simulate generation of 5 raw data files
+echo "Generating raw data files..."
+for i in {1..5}
+do
+    FILENAME="raw_data_\$i.txt"
+    # Create file with random content size to simulate different sizes
+    # We use /dev/urandom to generate random data and base64 to make it text-safe
+    # Size will be roughly between 500 and 1500 bytes
+    head -c \$((RANDOM % 1024 + 500)) < /dev/urandom | base64 > "\$FILENAME"
+    echo "Created \$FILENAME"
+done
+
+# 3. Categorize based on size (Inferred from Scenario description)
+echo "------------------------------------------"
+echo "Categorizing files based on size..."
+mkdir -p Small Large
+
+for file in raw_data_*.txt; do
+    # Get file size in bytes
+    size=\$(wc -c < "\$file")
+    echo "Processing \$file (Size: \$size bytes)"
+    
+    # Threshold set to 1000 bytes for demonstration
+    if [ "\$size" -lt 1000 ]; then
+        mv "\$file" Small/
+        echo " -> Moved to Small/"
+    else
+        mv "\$file" Large/
+        echo " -> Moved to Large/"
+    fi
+done
+
+# 4. Calculate dataset splits (Inferred from Scenario description)
+echo "------------------------------------------"
+echo "Calculating dataset splits..."
+total_files=5
+# Calculate 80% for training
+train_split=\$((total_files * 80 / 100))
+# Remaining for testing
+test_split=\$((total_files - train_split))
+
+echo "Total Files Processed: \$total_files"
+echo "Training Set (80%): \$train_split files"
+echo "Testing Set (20%): \$test_split files"
+
+echo "=========================================="
+echo "   Pipeline Completed Successfully"
+echo "=========================================="
+''';
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
+        title: const Text('OS Lab: Data Prep Script'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Generated Bash Script (data_prep.sh):',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'This script implements the "Shell-Based Data Preprocessing Pipeline" scenario.',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1E1E),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade800),
+                ),
+                child: SingleChildScrollView(
+                  child: SelectableText(
+                    scriptContent,
+                    style: const TextStyle(
+                      color: Color(0xFFD4D4D4),
+                      fontFamily: 'Courier',
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: scriptContent));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Script copied to clipboard!'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.copy),
+                  label: const Text('Copy Script Code'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
